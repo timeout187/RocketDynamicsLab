@@ -4,11 +4,15 @@
 [![Tests](https://img.shields.io/badge/tests-pytest-blue.svg)](tests/)
 [![Made with Streamlit](https://img.shields.io/badge/GUI-Streamlit-ff4b4b.svg)](src/gui/app.py)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](requirements.txt)
+[![Live App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://rocketdynamicslab.streamlit.app/)
 
 **A graduate-level, MIT/OpenCourseWare-style interactive laboratory for
 six-degree-of-freedom (6-DOF) rigid-body flight dynamics** — built around a
 single required reading on trajectory prediction and dispersion analysis for
 an unguided fin-stabilized artillery rocket.
+
+> 🚀 **[Try the live lab now →](https://rocketdynamicslab.streamlit.app/)**
+> No install required — runs the full interactive GUI in your browser.
 
 > ⚠️ **This is a teaching tool, not an operational engineering application.**
 > Every numeric default in this repository is a fictional teaching dataset —
@@ -143,6 +147,12 @@ Full derivations, assumptions, and implementation notes for every term live
 in [`docs/equations.md`](docs/equations.md) and [`docs/mathematical-model.md`](docs/mathematical-model.md).
 
 ## Quick start
+
+**Fastest way in:** open the hosted lab at
+**[rocketdynamicslab.streamlit.app](https://rocketdynamicslab.streamlit.app/)**
+— nothing to install.
+
+To run it locally instead:
 
 ```bash
 git clone https://github.com/timeout187/RocketDynamicsLab.git
