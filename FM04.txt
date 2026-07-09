@@ -1,0 +1,903 @@
+                                                            Paper: ASAT-13-FM-04
+
+13th International Conference on
+AEROSPACE SCIENCES & AVIATION TECHNOLOGY,
+ASAT- 13, May 26 ­ 28, 2009, E-Mail: asat@mtc.edu.eg
+Military Technical College, Kobry Elkobbah, Cairo, Egypt
+Tel : +(202) 24025292 ­ 24036138, Fax: +(202) 22621908
+
+Trajectory Prediction for a Typical Fin Stabilized Artillery Rocket
+
+                                M. Khalil*, H. Abdalla* and O. Kamal*
+
+Abstract: This paper investigates the trajectory prediction and dispersion for unguided fin
+stabilized artillery rocket in order to explain the importance of the rocket production accuracy
+and the benefit of using guided rockets. The total dispersion results mainly from three effects.
+The first is the dispersion due to rocket production inaccuracy, which includes propellant
+mass, composition inaccuracy, rocket total mass, axial and lateral moments of inertia and
+resultant center of gravity. The second dispersion during boosting phase which includes
+launcher deflection, missile tip-off from the launcher, thrust and fin misalignments, and
+atmospheric disturbances such as tail wind, cross wind, and gusts. While the third is the
+dispersion during free-flight phase that is due to the fluctuations in wind profile.
+
+In this study, a trajectory calculation using a 6-DOF model was developed and applied for a
+typical artillery rocket, the 122 mm artillery rocket, at different mass and flight properties to
+predict the trajectory parameters and dispersion.
+
+Keywords: Dispersion Analysis, Nominal Trajectory, Trajectory Prediction, 6-DOF Model,
+
+               122mm unguided artillery rocket.
+
+Nomenclature   Acceleration vector acting on the body.
+               Total axial force coefficient.
+[aN aE aD]T    Total roll moment coefficient.
+CA             Rolling moment coefficient derivative with roll rate.
+Cl             Rolling moment coefficient derivative with yaw rate.
+Clp            Pitching moment coefficient derivative with pitch rate.
+Clr            Pitching moment derivative with rate of change of angle of attack.
+Cmq            Pitching moment derivative with rate of change of angle of attack.
+Cm             Normal force coefficient derivative with angle of attack
+Cm             Normal force coeff. derivative with rate of change of angle of attack
+CN
+CN             Normal gravity on the ellipsoidal surface.
+g              Body axial moment of inertia, [kg.m2].
+Ix             Body mass products of inertia, [kg/m2].
+Ixy, Iyz, Izx
+
+* Egyptian Armed Forces
+                                                      1/14
+                  Paper: ASAT-13-FM-04
+
+Iy, Iz            Body transverse moment of inertia, [kg.m2].
+LBE               Transformation matrix from earth frame FE to body frame FB.
+M                 Mach number.
+m                 Total mass of the body, [kg].
+p                 Body spin rate, [rad/s].
+[P Q R]T          Body angular velocity, [rad/s].
+q                 Body pitch rate, [rad/s].
+r                 Body yaw rate, [rad/s].
+[Tx Ty Tz]T       Components of the resultant external force acting on the body in the
+                  body fixed reference frame, [N].
+[u v w]T          Components of the velocity vector of the body in the body fixed
+                  reference frame, [m/s].
+[ V N V E V D ]T  Total acceleration vector acting on the body.
+                  Angle of attack.
+                  Angle of sideslip.
+
+                  Specific heat ratio ( = 1.4 for isentropic flow).
+                  Roll angle (Bank angle) [deg].
+                  The latitude of body C.G w.r.t. Earth fixed reference
+                  frame [rad].
+                  Longitude of body C.G w.r.t. earth fixed reference frame [rad].
+                  Pitch angle (inclination angle), [deg].
+                  Yaw angle (azimuth angle), [deg].
+E                 Angular velocity of the earth [pE qE rE]T about the inertia reference
+                  frame [rad/s].
+
+1. Introduction
+
+Simulation of the trajectory of unguided rockets is a combination between all characteristics
+of the rocket (e.g. mass properties and configuration) and atmospheric conditions (predicted
+values). In practice, there are some differences between the real and the nominal trajectory
+due to manufacturing, measurement and atmospheric modeling errors. These differences
+make the rocket deviates from its nominal trajectory and miss its target.
+Therefore, studying sources of error between the real and predicted trajectories is a must, in
+order to help rocket designers to optimize the manufacturing tolerances and restrictions to
+avoid these sources of error, [8].
+
+The total dispersion results mainly from three phases [1, 2, 3]:
+
+     Dispersion due to rocket production inaccuracy, which includes:
+             - The propellant mass and composition inaccuracy.
+             - The rocket total mass, axial and lateral moments of inertia and resultant
+                    center of gravity inaccuracies.
+
+     Dispersion during boosting phase:
+             - Launcher deflection: It is the most common factor present with long
+                    launchers. It results from ignition shock and sudden high thrust build-up from
+                    the booster, which will generate a pitching rate on the rocket and it can be
+
+                                                      2/14
+                                                                                 Paper: ASAT-13-FM-04
+
+               solved by: (1) designing a stiffer launcher, (2) accounting for this motion in
+               setting the launcher.
+         - Rocket tip-off from the launcher: if the supporting shoes on the missile do
+               not leave the supporting rail or rails simultaneously, this will tilt the rocket
+               downward under the force of gravity and cause the missile to fly a new flight
+               path. With simultaneous shoe release, the rocket would have a simple
+               translational instead of combined translational and rotational motion
+               immediately upon leaving the launcher. This translational motion is not as
+               detrimental to the dispersion as the rotational motion.
+         - Launcher setting: since it is physically impossible to set the launcher
+               precisely at the desired angle, error in launcher angle is always present.
+         - Variation in rocket motor performance: because of the tolerance in rocket-
+               motor design, propellant properties, and manufacturing, the total impulse of
+               the rocket motor may vary.
+         - Thrust and fin misalignments: it is an important source of dispersion in case
+               of unguided rockets "flying on open loop". To minimize the dispersion due to
+               this misalignment a large static stability margin is required but its not desired
+               if the rocket is launched in a cross wind. Another method is used widely
+               which is spinning the rocket immediately off the launcher. This initial spin
+               may be produced by spin motor mounted on the missile or by using helical-
+               rail launchers.
+         - And atmospheric disturbances such as tail wind, cross wind, and gusts.
+
+ Dispersion during free-flight phase, which caused from change in wind profile,
+    variation in atmospheric density and variation in rocket characteristics.
+
+2. Mathematical Model
+
+In order to predict the trajectory of an unguided artillery rocket, six degrees of freedom
+6-DOF mathematical model is presented in [1,6], where the block diagram of this model is
+shown in Fig. 1.
+
+The equationsRf motions WKDWdescribe the 6-DOF model are derived according to some
+assumptions:
+
+  a) The flying body is rigid.
+  b) All equations are referred to a body fixed reference frame.
+  c) The aerodynamic coefficients are calculated in body fixed reference frame.
+  d) The Earth model is included (ellipsoidal shape, rotation, gravity....).
+  e) The atmospheric model is included where the temperature, sonic speed, and air density
+
+      are varying with the body altitude.
+
+The 6-DOF equations of motions are three translational degrees describe the motion of mass
+(CG), also called the trajectory, as shown in equation (1),
+
+ u         1   TTTzxyAAAnaosxrimdiaeal l         sin        p  E    p     u
+           m                                  gcos.sin      q  B    q
+  v                                                                         v    (1)
+                                               cos .cos        E    r          
+                                                               B
+
+w                                                            rBE          w 
+
+And three attitude degrees orient the projectile, as shown in equation (2),
+
+                                              3/14
+  p                                r      p.q                                                                                                                   Paper: ASAT-13-FM-04
+    L                       Izx                              Iy  Iz      .q.r                                                                                                           (2)
+    Ix                              Ix                           Ix
+
+  q M                       Izx      r2   p2       Iz         Ix .r.p 
+    Iy                  
+                                                  Iy                  
+
+  r N                     I  zx  p        q.r               Ix   Iy      .p.q 
+    Iz                                                           Iz
+                                   Iz
+
+         INITIAL CONDITIONS                                                         Acceleration in body axes                                                          Aerodynamic &
+    - Initial mass mo, mp                                                                                                                                           Propulsive Forces &
+    - Launching angles o ,o , o                                      u           1     Tx  Aaxial                    sin              p  E     p        u 
+    - Muzzle velocity vxo , vyo , vzo                                            m                                                       B                                 Moments
+    - Muzzle position o,o                                             v                 Ty   Aside               g  cos  . sin        q                   v  
+    - Mass moment of inertia Ixx, Iyy, Izz, Izx                                                                                          E     q                  Aerodynamic forces and
+    - Initial rates po, qo, ro                                                                                                           B                        moments modeled in
+    - Wind velocity                                                                                                                                               body axes. Propulsive
+                                                                    w                 Tz  Anormal                  cos .cos             rBE    r        w         forces modeled in body
+                                                                                                                                                                  axes.
+
+                                                                                    Acceleration in geodetic frame
+
+                                                                                              sin  sin  cos                cos  sin      cos        
+                                                                      cos  cos                 cos  sin                     sin  sin     
+
+                                                             a N                              sin  sin  sin                cos  sin      sin              a  x    Mach number
+                                                             a E      cos                      cos  cos                     sin  cos                      a  y
+                                                                               sin                                                                                                V
+                                                                                                                                                                                    a
+                                                                                                                                                                        M  
+                                                             a D                                                                                          az  B
+                                                                                                                                                      
+
+                                                                            sin                   sin  cos                      cos  cos              
+                                                                                                                                                      
+                                                                                                                                                                      Sonic speed
+                                            Euler's Equation                                                                                                           a  .R.T
+
+                      1          .Iz.L  Izx .N  Iz.Izx 1        Ix  Iy   .p.q                                   
+                                                                  Iz                                         .q.r
+      p                                                                                        2      I  2
+                         I 2zx                                                      IyIz    I  z         zx              Acceleration in geodetic frame taking in account
+                                                                                                                                             Earth's rotation
+          I  x  I  z
+                                                                                                                           V N  (  2.).sin().VE   .VD  a N
+      q   M                 Izx  r2   p2   Iz     Ix .r.p                                                                  V E  (  2.).sin().VN  (  2.).cos().VD  aE
+          Iy                                                                                                               V D  (  2.).cos().VE  .VN  a D
+                                          Iy               
+
+                                . Izx .L  Ix .N 
+          r
+                1           2                      Iy   Ix    Iz  .Izx .r.q   I  2   IxIy      I  2   .q.p
+             xIz            zx                                                   x                zx
+          I              I
+
+                                                                                                                           Navigation Equation                       Velocity in
+                                                                                                                                                                  geodetic frame
+                   Effect of Earth's Rotation
+                                                                                                                                         VN                       VN 
+
+                P p                          (E   ) cos                                                                           R meridian  H G                 VE  
+                                                                                                                                                                      
+                Q               q                                                                                                              VE
+                                       LBE                                                                                        R normal      HG        .cos    VD 
+                                                                                                Stop
+                R r                          (E   ) sin                                     Simulation                                                                  
+
+                        Kinematics Equation                                                                                                    Yes                if altitude  0
+                                                                                                                                                Altitude
+        1 sin  tan  cos  tan   P                                         
+
+                      0          cos            sin          Q                                                                                                          No
+                                                       
+        0 sin  sec  cos  sec  R 
+
+       Output Parameters                                                          ATMOSPHERIC MODEL
+
+    - Summit point altitude and time                                          The air temperature and air
+    - Impact point parameters                                                 density as functions of altitude
+    - Total time of flight
+    - Axial and Normal accelerations
+    - etc...
+
+                                                       Fig. 1 Block diagram of 6-DOF model
+
+                                                                                                  4/14
+                                                                     Paper: ASAT-13-FM-04
+
+The Earth rotation is taken into consideration as,
+
+ P p                  (E   ) cos  
+                                    
+Q       q     L  BE                                                                        (3)
+
+R r                   (E   ) sin 
+
+where the transformation matrix from body axes to earth axes is shown in equation (4),
+
+         cos cos                    cos sin                sin  
+                                                          
+
+            sin  sin cos        sin  sin sin              
+             cos  sin 
+L BE                                cos    cos        sin  cos                             (4)
+                                                                  
+                              
+
+                                                          
+
+            cos  sin   cos        cos sin sin                     
+             sin  sin              sin  cos           cos  cos 
+
+                                                                  
+
+3. Case Study
+
+In this study, a trajectory calculation using a 6-DOF model was developed and applied for
+122 mm unguided artillery rocket. All aerodynamic forces and moments coefficients of the
+given shell are calculated using Missile Datcom. The mass properties of the given shell is
+calculated using Inventor considering the change of the rocket mass during propellant burning
+till the propellant burn-out (active part), then the rocket will fly the rest of its trajectory as a
+projectile of fixed mass (passive part). The 6-DOF model assumed the rocket is ideal, where
+the axis of symmetry of the exterior surface coincides with the longitudinal principal axis of
+inertia, and the two lateral principal moments of inertia are identical.
+
+    3.1. Main data
+The main data and firing conditions of the studied artillery rocket are summarized below:
+
+Caliber.                                              D              = 122 mm
+Overall Length.                                       Lt
+Total Mass.                                           Mt             = 2870 mm
+Propellant Mass.                                      mp
+Propellant Burning Time.                              tk             = 66 Kg
+Mean Thrust.                                          Tx
+Initial Center of Gravity from the Nose Tip.          C.G_xi             20.5 Kg
+Final Center of Gravity from the Nose Tip.            C.G_xf
+Initial Axial Moment of Inertia.                      I_xxi              1.67 s
+Final Axial Moment of Inertia.                        I_xxf
+Initial Lateral Moment of Inertia.                    I_yyi = I_zzi      23600 N
+Final Lateral Moment of Inertia.                      I_yyf = I_zzf
+Shell muzzle velocity                                 Vo             = 1.374 m
+Shell muzzle spin rate                                po
+Firing Elevation Angle                                               = 1.264 m
+                                                      o              = 0.1499 Kg.m2
+                                                                     = 0.1238 Kg.m2
+                                                                     = 41.58 Kg.m2
+                                                                     = 33.83 Kg.m2
+
+                                                                     = 26.7 m/s
+
+                                                                     = 5.8 rps
+
+                                                                     = 50
+
+                                                    5/14
+                                                                 Paper: ASAT-13-FM-04
+
+3.2. Aerodynamic coefficients and derivatives
+Knowing the aforementioned configuration definitions, the aerodynamic coefficients and
+derivatives for 122mm unguided rocket are computed using the analytical capability of the
+Missile Datcom code. The results of these calculations are shown in Table 1.
+
+                   Table 1 The aerodynamic coefficients and derivatives
+                                     for 122mm unguided rocket
+
+M  CA          Cl  C lp    Cl r     C m                        C mq                          C m
+   A P CN C N            AP       AP                         AP                           AP
+
+0.2 .340 .477 8.57 -52.129 .075 -8.198 0.161 -0.43 -53.8386 -61.6158 -2542.92 -2862.61 -96.593 -121.264
+
+0.4 .305 .442 9.10 -52.139 .076 -8.312 0.219 -0.415 -54.3829 -62.2050 -2546.69 -2860.55 -99.443 -126.039
+
+0.6 .291 .427 9.48 -52.148 .077 -8.449 0.225 -0.457 -55.1018 -62.9840 -2539.2 -2843.26 -104.587 -134.617
+
+0.8 .290 .424 9.82 -52.157 .076 -8.448 0.437 -0.123 -54.3483 -62.1768 -2473.68 -2777.00 -112.628 -147.939
+
+1.0 .391 .574 9.99 -52.63 .077 -8.339 0.615 0.294 -55.0595 -63.0754 -2423.07 -2735.95 -123.998 -166.608
+
+1.1 .445 .648 10.16 -52.994 .094 -8.674 0.67 0.171 -62.072 -70.4885 -2675.52 -3000.02 -131.225 -178.402
+
+1.2 .444 .637 10.00 -53.057 .102 -8.870 0.79 0.356 -65.6489 -74.3189 -2780.73 -3117.29 -140.089 -192.844
+
+1.3 .349 .537 10.08 -63.529 .110 -9.304 0.871 0.551 -66.055 -75.5352 -2877.06 -3237.14 -144.48 -201.76
+
+1.4 .345 .529 10.34 -65.882 .123 -10.17 0.974 0.793 -73.4021 -83.6276 -3068.43 -3463.90 -147.441 -206.842
+
+1.5 .333 .512 10.44 -66.966 .128 -9.947 -0.807 -0.903 -70.0033 -80.0419 -2280.63 -2535.50 -148.807 -209.186
+
+1.6 .322 .495 10.59 -67.717 .126 -9.836 -0.565 -1.079 -68.1121 -78.0571 -2282.44 -2535.58 -149.751 -210.807
+
+1.8 .304 .464 10.67 -68.599 .120 -9.339 -0.688 -1.022 -63.0248 -72.6351 -2175.18 -2410.93 -150.862 -212.714
+
+2.0 .287 .434 10.13 -68.875 .113 -8.762 -0.374 -0.536 -57.607 -66.8122 -2188.04 -2431.46 -151.209 -213.309
+
+2.2 .271 .406 9.05 -68.672 .105 -8.15 0.064 -0.076 -37.6782 -45.2677 -1840.82 -2046.55 -150.953 -212.870
+
+3.3. Trajectory Analysis
+In order to investigate the trajectory parameters which are calculated using presented 6-DOF
+model of the given unguided rocket, a single case will be chosen corresponds to firing angle
+o = 50.
+
+Figure 2 shows the trajectory of the rocket at o = 50. The rocket has very small drift in
+case of no side wind due to its high stability (fin stabilized). Figure 3 shows the rocket
+altitude during flight time, where the total flight time is 79 sec but the summit time is nearly
+36 sec. Due to the high velocity of the rocket at the burn out point of the trajectory (at the
+end of burning), the summit time is less than half of the total flight time.
+
+                                                8000
+
+                                                7000
+
+                                                6000
+
+                                  Altitude [m]  5000
+
+                                                4000
+
+                                                3000
+
+                                                2000
+
+                                                1000
+
+                                                0
+
+                                                      0  10  20  30  40               50  60  70             80
+
+                                                                     Flight time [s]
+
+   Fig. 2 The 3D trajectory path                Fig. 3 The rocket altitude during
+                                                               flight time
+
+Figure 4 shows the velocity of the rocket from firing to impact points, where the velocity at
+the firing point is 26.7 m/s and it will be increased due to the thrust force acting in flight
+direction, where the velocity at the burn-out point (end of burning) is 705 m/s. Then the
+
+                                                    6/14
+                                                                                                Paper: ASAT-13-FM-04
+
+velocity will be decreased as well as the rocket goes up (altitude increased) until the summit
+point, then the rocket will go down to increase the rocket velocity due to a gravitational
+acceleration component in the direction of the velocity vector which will accelerate it.
+
+800Velocity magnitude [m/s]                                                        800
+700                                                     Velocity magnitude [m/s]   700
+600                                                                                600
+500      2  4    6           8 10                                                  500      20  40   60      80
+400                                                                                400
+300                                                                                300
+200                                                                                200
+100                                                                                100
+
+   0                                                                                  0
+      0                                                                                  0
+
+            Flight time [s]                                                                 Flight time [s]
+
+            (a)                                                                                 (b)
+
+         Fig. 4 The velocity magnitude of the rocket vs. flight time
+
+Figure 5-a shows the axial acceleration of the rocket at the beginning (firing point) where it
+is equal 35.4g in flight direction, due to the thrust force act in the axial direction of the
+rocket. The axial acceleration is increasing till the burn out point (end of burning) where the
+thrust equal zero then the axial acceleration is now 4g in direction opposite to its flight
+direction, due to the aerodynamic axial force acting on the rocket and the gravitational
+acceleration component in the opposite direction of its flight direction. Figure 5-b shows
+that the axial acceleration will be decreased due to the decreasing of its aerodynamic axial
+force (due to decreasing of free stream velocity) and decreasing of gravitational acceleration
+component in the opposite direction of flight direction (elevation angle is decreasing). The
+axial acceleration will be in the direction of flight again after the summit point, where the
+component of gravitational force is greater than the aerodynamic axial force and then it will
+be decreased again due to increasing of its aerodynamic axial force (increasing of free
+stream velocity).
+
+Axial acceleration [gees]50                                                         0.5
+                                                        Axial acceleration [gees]40   0
+ 30
+ 20      2  4    6           8 10                                                  -0.5     20  40   60      80
+ 10                                                                                  -1
+
+  0                                                                                -1.5
+-10                                                                                  -2
+
+     0                                                                             -2.5
+                                                                                     -3
+
+                                                                                   -3.5
+                                                                                     -4
+                                                                                         0
+
+            Flight time [s]                                                                 Flight time [s]
+
+            (a)                                                                                 (b)
+
+         Fig. 5 The axial acceleration of the rocket vs. flight time
+
+                             7/14
+                                                                                                Paper: ASAT-13-FM-04
+
+Figure 6-a shows the normal acceleration from the point of firing till 10 s flight time, where
+the magnitude at the firing point is 0.64g. The normal acceleration is oscillating highly
+during the first 4 seconds, which may be attributed to oscillations of the aerodynamic rates.
+
+Figure 6-b shows that the normal acceleration is increasing due to the decrease in the
+elevation angle of the rocket (increasing the gravitational acceleration component
+normal to rocket body) till the summit point of the rocket where the elevation angle
+is equal to zero to equal 1g and then the normal acceleration will decrease due to the
+increase of the elevating angle (decreasing the gravitational acceleration component
+normal to rocket body).
+
+ 0.8Normal acceleration [gees]                                                      1.2
+0.75                                                    Normal acceleration [gees]    1
+
+ 0.7     2  4    6           8 10                                                   0.8     20  40   60      80
+0.65                                                                                0.6
+                                                                                    0.4
+ 0.6                                                                                0.2
+0.55
+                                                                                      0
+ 0.5                                                                                     0
+      0
+
+            Flight time [s]                                                                 Flight time [s]
+
+            (a)                                                                                 (b)
+
+         Fig. 6 The normal acceleration of the rocket vs. flight time
+
+Figure 7 shows the spin rate of the given rocket as function of flight time, where the spin
+rate at the firing point is 36 rad/s [5-6 rps] and then it will be decreased slightly after leaving
+launcher due to friction acting on the rocket body and the low velocity of the rocket. As the
+velocity of the rocket increased during burning of propellant, the spin rate will be increased
+due to the inclination of the rocket fins which will rotate the rocket in a positive spin
+direction as it shown in Fig. 7-a. After the burn-out point the rocket velocity will be
+decreased which will decrease the spin rate as shown in Fig. 7-b. Finally, the velocity will
+increase again to increase the spin rate too.
+
+Figure 8 shows the variation of the elevation angle of the rocket during flight time, where
+the summit point is occurred nearly 36s. During the beginning of rocket flight there are
+fluctuations in the pitch angle as shown in Fig. 8-a due to the high pitch rate as shown in
+Fig. 9.
+
+                             8/14
+                                                                                                          Paper: ASAT-13-FM-04
+
+Spin rate [rad/s]  160                                  Spin rate [rad/s]  160
+                   140                                                     140
+                   120     2  4    6           8 10                        120                        20      40           60      80
+                   100                                                     100
+                                                                            80
+                    80                                                      60
+                    60                                                      40
+                    40                                                      20
+                    20
+                      0                                                      0
+                                                                                 0
+                        0
+
+                              Flight time [s]                                                             Flight time [s]
+
+                              (a)                                                                             (b)
+
+                              Fig. 7 The spin rate of the rocket vs. flight time
+
+                   51
+
+Pitch angle [deg]  50                                                      Pitch angle [deg]   50
+                                                                                               35
+                   49                                                                          20
+
+                   48                                                                           5
+                                                                                              -10
+                   47                                                                         -25
+                                                                                              -40
+                   46                                                                         -55
+                                                                                              -70
+                   45
+                                                                                                   0
+                       0   1  2    3           4  5                                                       20       40          60      80
+
+                              Flight time [s]                                                             Flight time [s]
+
+                              (a)                                                                             (b)
+
+                              Fig. 8. The pitch angle of the rocket vs. flight time
+
+Figure 9 shows the aerodynamic angles which are angle of attack , side-slip angle , and
+total angle of attack acting on the rocket during its flight time. Figure 9-a shows that the
+total angle of attack is zero at the launch point (no perturbation) and then increased and
+decreased in a cyclic motion with a high total angle of attack due to the rocket low velocity.
+As the velocity of the rocket increased to its maximum value at the burn out point at
+(t = 1.67 s), the total angle of attack fluctuation will be terminated. The total angle of attack
+will be increased as shown in Fig. 9-c till the summit point of the rocket, then it will be
+decreased till the end of flight.
+
+                                                  9/14
+                                                                                                                          Paper: ASAT-13-FM-04
+
+0.8                            Beta
+
+0.6                            Alpha                                                                        0.03
+
+Aerodynamic angles [deg]0.4    Alpha_bar                                                                    0.025
+                                                                               Total angle of attack [deg]
+0.2                                                                                                         0.02
+
+0                                                                                                           0.015
+
+-0.2
+                                                                                                   0.01
+
+-0.4
+
+                                                                                                  0.005
+-0.6
+
+-0.8                                                                                                        0
+
+      0  0.5       1           1.5        2                                                                        0  20       40          60       80
+
+              Flight time [s]                                                                                             Flight time [s]
+
+              (a)                                                                                                         (b)
+
+         Fig. 9. The aerodynamic angles of the rocket vs. flight time
+
+3.4. Dispersion Analysis
+The dispersions investigated in this paper have been applied to the rocket dynamics. The
+models modified in the rocket simulation to include dispersion capabilities which are firing
+conditions, and rocket mass properties. Table 2., shows a list of eight uncertainty parameters
+that have been used in this work. It is tried to consider all the important parameters.
+
+The limits of uncertainties presented in table 2 are improved by individual error analysis,
+where a range of values in the defined limits in table 2, was given to each parameter and
+simulation was run several times. Using simulation results, it was possible to plot the impact
+point distance error vs. different parameters variation. This investigation is done in order to
+find a good estimation for each individual parameter uncertainty.
+
+              Table 2 Uncertainty parameters and ranges
+
+                      Parameter Definition                                                                            Uncertainty Range Unit
+1 Launching pitch angle
+2 Rocket total mass                                                                                                   [-0.4 0.4]               deg
+3 Propellant mass
+4 Propellant burning time                                                                                             [-1.0 1.0]               %
+5 Thrust mean value
+6 Air density                                                                                                         [-1.0 1.0]               %
+7 Axial moment of inertia
+8 Lateral moment of inertia                                                                                           [-0.1 0.1]               s
+9 Rocket launch velocity
+10 Rocket launch spin rate                                                                                            [-1.0 1.0]               %
+11 Wind speed at zero altitude
+12 Wind direction at zero altitude                                                                                    [-4.0 4.0]               %
+
+                                                                                                                      [-2.0 2.0]               %
+
+                                                                                                                      [-2.0 2.0]               %
+
+                                                                                                                      [-2.0 2.0]               %
+
+                                                                                                                      [-2.0 2.0]               %
+
+                                                                                                                      [-2.0 2.0]               m/s
+
+                                                                                                                      [-2.0 2.0]               deg
+
+The rocket dispersion is obtained from calculating range and drift differences from the
+projectile nominal point of impact. The effects of rocket launch velocity error on dispersion
+as shown in Fig. 10, is caused by the change of gases pressure applied on the base of the
+projectile due to the propellant ignition. The rocket range is inverse proportional to
+atmospheric density where the drag force is increased with the increasing of atmospheric
+density.
+
+                                             10/14
+                                                                                                               Paper: ASAT-13-FM-04
+
+600                  Rang e error      Drift error     Radial error                               Range error    Drift error        Radial error
+
+                                                                                       1500
+
+400                                                                                    1000
+
+200                                                                                    500
+Errors [m]
+                                                                   Errors [m]0    0
+
+               1. 5                                                                              3
+                                                                                                 2
+-200 1
+                                                                              -500 1
+               0.5
+                                                                                                 0
+-400          0                                                                                 -1
+         - 0.5                                                                                 -2
+
+             -1                                                              -1000 - 3
+         - 1. 5
+                                                                                                    -2 -1 0 1 2
+                     -6 -4 -2 0 2 4 6
+
+-600                                                                         -1500
+       -5 -4 -3 -2 -1 0 1 2 3 4 5
+                                                                                       -1.5 -1 -0.5 0                      0.5      1        1.5
+                   Air density error[%]
+                                                                                                  Propellant mass [%]
+
+Fig. 10. The effect of air density error                              Fig. 11. The effect of propellant mass error
+               on dispersion                                                             on dispersion
+
+The range is decreased with the increasing of the propellant mass as shown in
+Fig. 11 where the inertial force is less than in case of nominal trajectory during free flight
+regime, but the drift is slightly increased due to the increase of the gyroscopic moment. As
+the burning time of the rocket motor increased the range error increased due to the increase
+of the burn-out velocity as shown in Fig. 12, but the drift error is slightly decreased.
+Increasing the mean thrust value acting on the rocket will increase the rocket range error
+which also increases the burn-out velocity as shown in Fig. 13.
+
+2000                 Range error       Drift error     Rad ial error                   300        Range error    Drift error           Radial error
+1500
+                                                                                       200
+
+Errors [m]1000                                                                         100
+  500
+                                                                           Errors [m]0 0
+ -500
+                                        6                                              -100                             1
+-1000                                   3                                                                           0 .5
+-1500                                   0                                              -200
+-2000                                  -3                                                                           0
+                                       -6                                              -300
+      -0.15                                                                                 -1.5                    -0 .5
+                                          -0.2 -0.1 0
+                                                       0 .1 0 .2                                                    -1
+
+                                                                                                                           -2   -1  0     1       2
+
+                     -0.1 -0.05 0 0.05 0.1 0.15                                                   -1 -0.5        0             0.5     1          1.5
+
+                      Propellant burning time [s]                                                 Mean thrust value error [%]
+
+Fig. 12. The effect of the propellant burning                         Fig. 13. The effect of the mean thrust error on
+            time error on dispersion                                                         dispersion
+
+Since it is physically impossible to set the launcher precisely at the desired angle, error in
+launcher angle is always present where the range error will be decreased or increased
+depending on the nominal launch angle. In our case study the range decreased and the drift
+error will be increased as shown in Fig. 14. Increasing the rocket gross mass will decrease the
+burn-out velocity to decrease the rocket range as shown in Fig. 15.
+
+                                                                      11/14
+                                                                                                    Paper: ASAT-13-FM-04
+
+          Range error             Drift error     Radial error                        Ran ge error             Drift error        Rad ial error
+
+150                                                                        200
+
+100                                                                        150
+
+Errors [m]                                                                 100
+                                                                 Errors [m]
+50
+
+                                                                             50
+
+0
+
+ -50       2                                                                   0       0.6
+-100        1                                                               -50        0.4
+           0                                                               -100        0.2
+          -1
+          -2              123                                                              0
+                                                                                      - 0.2
+              -3 -2 -1 0                                                              - 0.4
+                                                                                      - 0.6
+
+                                                                                             -3 -2 -1 0 1 2 3
+
+-150                                                                       -150
+
+      -3  -2              -1   0     1            2              3                -3  -2  -1                   0            1     2     3
+
+              Launch angle error[deg]                                                 Rocket gross mass error [%]
+
+Fig. 14. The effect of rocket launch angle                                 Fig. 15. The effect of the rocket gross mass
+             error on dispersion                                                         error on dispersion
+
+Increasing the launch velocity of the rocket will increase the burn-out velocity which will
+increase the range as shown in Fig. 16. as the launch spinning rate of the rocket is increased
+the drift will be decreased from its nominal value due to the increasing of rocket stability as
+shown in Fig. 17. The rocket range increased when a tail wind presented (the rocket Mach no
+will be decreased) on the rocket body which will decrease the drag force acting on the rocket
+as shown in Fig. 18. As shown in Fig. 19, if a cross wind is presented the rocket drifts to right
+if the wind came from right and vise verse due to the presence of tail surfaces behind the
+rocket center of gravity to make the rocket fly opposite to wind direction.
+There is no effect of the axial and lateral mass moments of inertia on the rocket range. But in
+case of drift, the drift will be decreased with increasing Ixx and increased with increasing of Iyy
+(Izz) as shown in Fig.s 20, 21.
+
+          Range error             Drift error        Radial error                     Range error                 Drift error        Radial error
+
+25                                                                         0.08
+20
+15                                                                         0.06
+10
+                                                                           0.04
+  5
+  0Errors [m]                                                              0.02
+ -5                                                            Errors [m]
+-10                                                                          0
+-15
+-20                                   0 .06                                -0.02
+-25                                   0 .04
+                                      0 .02                                -0.04
+     -3
+                                            0                              -0.06
+                                     -0 .02
+                                     -0 .04
+                                     -0 .06
+
+                                               -3 -2 -1 0 1 2 3
+
+                                                                           -0.08
+
+          -2              -1      0            1     2              3             -3  -2  -1                   0               1     2           3
+
+              Launch velocity error [%]                                                   Launch spin rate error [%]
+
+Fig. 16. The effect of launch velocity error                               Fig. 17. The effect of launch spin rate error
+                  on dispersion                                                               on dispersion
+
+                                                                    12/14
+                                                                                                                      Paper: ASAT-13-FM-04
+
+                       Range error     Drift error        Radial error                                  Rang e error                Drift error        Radial error
+
+            100                                                                                 80
+              80
+              60                                                                                60
+              40
+              20                                                                                40
+                0
+Errors [m]   -20                                                                    Errors [m]  20
+             -40
+             -60                                                                                0
+             -80
+                                        4                                                     -20           0
+            -100                        2                                                     -40       -0 .1
+                   -3                                                                         -60       -0 .2
+                                        0                                                               -0 .3
+                                       -2                                                               -0 .4
+                                       -4
+                                                                                                               -3 -2 -1 0 1 2 3
+                                           -3 -2 -1 0 1 2 3
+
+                       -2  -1       0               1     2          3              -80                 -2  -1                   0               1     2     3
+                                                                                         -3
+
+                           Wind velocity [m/s]                                                              Wind direction [deg]
+
+            Fig. 18. The effect of wind velocity on                                             Fig. 19. The effect of wind direction
+                             dispersion                                                                 (10 m/s) on dispersion
+
+                       Range error  Drift error        Radial error                                     Range error                 Drift error           Radial error
+
+            0.4                                                                     0.06
+
+            0.3                                                                     0.04
+
+            0.2
+
+Errors [m]  0.1                                                         Errors [m]  0.02
+
+            0                                                                                   0
+
+            -0.1                                                                    -0.02
+
+            -0.2
+
+            -0.3                                                                    -0.04
+
+            -0.4                                                                    -0.06
+
+                  -3   -2  -1       0            1     2     3                                      -3  -2  -1                      0               1     2          3
+
+                  Axial mass moment of inertia error [%]                                                Lateral mass moment of inertia error [%]
+
+Fig. 20. The effect of axial mass moment of                             Fig. 21. The effect of lateral mass moment of
+          inertia error on dispersion                                              inertia error on dispersion
+
+4. Conclusion:
+
+Trajectory analysis of an unguided 122mm artillery rocket using simulation software was
+undertaken to show the importance of this type of analysis in order to know all parameters
+acting on the rocket during its flight which may be useful to avoid flight mistakes. The
+dispersion analysis is used to show the importance of identifying the design weaknesses in
+margins of specific parameters. Also, it is used to find out the optimum values of the rocket
+motor parameters for lowest impact point error, and the probability of flight-to-target success.
+Results were presented for the selected conditions in the form of dispersion. This analysis
+showed that the rocket motor parameters (burning time, propellant mass and mean thrust
+value) have a great effect on the rocket range and its impact point error.
+
+                                                             13/14
+                                                                                    Paper: ASAT-13-FM-04
+
+5. References
+
+ [1] Bernard Etkin, "Dynamics of Atmospheric Flight", United States of America, John
+          Wiley & Sons, 1972.
+
+ [2] Douglas O., and Mark C., "Model Predictive Control of a Direct Fire Projectile
+          Equipped With Canards ", Journal of Dynamic Systems, Measurement, and Control,
+          Vol. 130, NOVEMBER 2008.
+
+ [3] Ezeddine Salem Ab. Ali, "Parametric Study Of Missile Trajectory", M.Sc. thesis,
+          Military Technical College, Cairo, Egypt, March 2009.
+
+ [4] Gagnon E., and Lauzon M., "Course Correction Fuze Concept Analysis for In
+          Service 155 mm Spin-Stabilized Gunnery Projectiles", AIAA Guidance, Navigation
+          and Control Conference and Exhibit, Honolulu, Hawaii, 18 - 21 August 2008.
+
+ [5] Jankovic, S., Gallant, J., and Celens, E., "Dispersion of an Artillery Projectile due to
+          Unbalance", 18th International Symposium on Ballistics, San Antonio, pp. 128-141,
+          15-19 November, 1999.
+
+ [6] Khalil M. S., "Trajectory Predection of Flying Vehicle", M.Sc. thesis, Military
+          Technical College, Cairo, Egypt, 2008.
+
+ [7] Lua, K. B., Lim, T. T., and Luo, S. C., "Helical-Groove and Circular-Trip Effects on
+          Side Force", Journal of Aircraft, Vol.37, No.5, pp. 906-915, 2000.
+
+ [8] SAGHAFI F., and KHALILIDELSHAD M., "A Monte-Carlo Dispersion Analysis
+          of a Rocket Flight Simulation Software", 17th European Simulation Multi-
+          Conference ESM2003, England, 9-11 June, 2003.
+
+ [9] Sailaranta, T., Siltavuori, A., Laine, S., and Fagerstrom, B., "On Projectile Stability
+          and Firing Accuracy", 20th International Symposium on Ballistics, Orlando, pp. 195-
+          202, 23-27 September, 2002.
+
+                                                     14/14
+
