@@ -39,6 +39,16 @@ class RocketParams:
     v_muzzle: float = 26.7          # Vo, [m/s]
     p_muzzle: float = 36.4          # po (spin rate), [rad/s] (~5.8 rps)
 
+    # Fin-cant roll-driving moment coefficient (dimensionless, lumped Cl_delta*delta).
+    # NOT published in the paper's Table 1 -- the paper only tabulates roll
+    # *damping* (Clp), but its Fig. 7 explicitly describes spin *increasing*
+    # during boost "due to the inclination of the rocket fins," which requires
+    # a roll-driving term Table 1 doesn't provide. This is an assumed value,
+    # calibrated so the roll-rate history qualitatively matches Fig. 7's shape
+    # (slight post-launch dip, rise through boost, decay after burnout) --
+    # see docs/aerodynamic-model.md.
+    fin_cant_coefficient: float = 2.0
+
     reference_area: float = None    # computed from caliber if None
 
     def __post_init__(self):

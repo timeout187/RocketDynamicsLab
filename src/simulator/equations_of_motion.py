@@ -62,10 +62,17 @@ def state_derivative(t, x, rocket: RocketParams, atmo: Atmosphere, aero: AeroMod
     rho = atmo.density(max(altitude, 0.0))
     M = atmo.mach(max(altitude, 0.0), V)
 
-    Tx_a, Ty_a, Tz_a = aero.forces_moments(rho, V, M, alpha, beta, p, q, r,
-                                            rocket.reference_area, rocket.caliber)[:3]
-    L_aero, M_aero, N_aero = aero.forces_moments(rho, V, M, alpha, beta, p, q, r,
-                                                  rocket.reference_area, rocket.caliber)[3:]
+    # Active part = motor burning (lower base drag CA, initial-CG moment ref);
+    # Passive part = coasting (higher base drag). Paper Sec. 3.
+    active = t < rocket.burn_time
+    Tx_a, Ty_a, Tz_a, L_aero, M_aero, N_aero = aero.forces_moments(
+        rho, V, M, alpha, beta, p, q, r, rocket.reference_area, rocket.caliber, active=active)
+
+    # Fin-cant roll-driving moment (see RocketParams.fin_cant_coefficient) --
+    # not in Table 1, added so spin follows the paper's Fig. 7 shape instead
+    # of monotonically decaying through the pitch/yaw natural frequency.
+    q_bar = 0.5 * rho * V * V
+    L_aero += q_bar * rocket.reference_area * rocket.caliber * rocket.fin_cant_coefficient
 
     Tx = Tx_thrust + Tx_a
     Ty = Ty_a
@@ -79,10 +86,12 @@ def state_derivative(t, x, rocket: RocketParams, atmo: Atmosphere, aero: AeroMod
         P, Q, R = p, q, r
 
     # --- Eq. (1): translational dynamics (body axes), with Euler-resolved gravity ---
+    # Thrust already accounts for propellant momentum flux, so no separate
+    # (mdot/m)V term appears -- matching the paper's published Eq. (1).
     g = G0
-    u_dot = Tx / m - g * np.sin(theta) - (mdot / m) * u - (Q * w - R * v)
-    v_dot = Ty / m + g * np.cos(theta) * np.sin(phi) - (mdot / m) * v - (R * u - P * w)
-    w_dot = Tz / m + g * np.cos(theta) * np.cos(phi) - (mdot / m) * w - (P * v - Q * u)
+    u_dot = Tx / m - g * np.sin(theta) - (Q * w - R * v)
+    v_dot = Ty / m + g * np.cos(theta) * np.sin(phi) - (R * u - P * w)
+    w_dot = Tz / m + g * np.cos(theta) * np.cos(phi) - (P * v - Q * u)
 
     # --- Euler's Equation (rotational dynamics), axisymmetric body (Ixy=Iyz=Izx=0) ---
     p_dot = (L_aero - (Izz - Iyy) * q * r) / Ixx

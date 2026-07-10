@@ -12,7 +12,7 @@ from simulator import run_simulation
 
 
 def main():
-    res = run_simulation(elevation_deg=45.0, t_end=120.0, dt=0.01, method="rk4")
+    res = run_simulation(elevation_deg=50.0, t_end=120.0, dt=0.002, method="rk4")
     print(f"Time of flight:     {res.time_of_flight:8.2f} s")
     print(f"Summit altitude:    {res.summit_altitude:8.1f} m  at t={res.summit_time:.2f} s")
     print(f"Impact range:       {res.impact_range:8.1f} m")

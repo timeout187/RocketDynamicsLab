@@ -12,10 +12,10 @@ from simulator import run_simulation
 
 
 def main():
-    rk4 = run_simulation(elevation_deg=45.0, t_end=120.0, dt=0.01, method="rk4")
-    ivp = run_simulation(elevation_deg=45.0, t_end=120.0, dt=0.05, method="solve_ivp")
+    rk4 = run_simulation(elevation_deg=50.0, t_end=120.0, dt=0.002, method="rk4")
+    ivp = run_simulation(elevation_deg=50.0, t_end=120.0, dt=0.01, method="solve_ivp")
 
-    print("RK4 (fixed dt=0.01):")
+    print("RK4 (fixed dt=0.002):")
     print(f"  range={rk4.impact_range:.2f} m, ToF={rk4.time_of_flight:.2f} s, steps={len(rk4.t)}")
     print("solve_ivp (adaptive RK45):")
     print(f"  range={ivp.impact_range:.2f} m, ToF={ivp.time_of_flight:.2f} s, steps={len(ivp.t)}")

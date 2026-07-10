@@ -3,6 +3,33 @@
 All notable changes to this project are documented here.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.2.0] — 2026-07-10
+
+### Changed
+- **Rebuilt the GUI as a single-page dashboard** (`src/gui/app.py`), matching
+  a sidebar (rocket properties, initial conditions, atmosphere/wind, solver
+  settings, dispersion parameters) + editable Table 1 aero data grid
+  (upload/reset/download CSV) + Run button + 3D trajectory + 7 time-history
+  plots + CSV/JSON export + joint Monte Carlo dispersion sweep. Replaces the
+  previous 10-page multipage layout.
+- **Aerodynamics now use Table 1's published coefficients directly**
+  (`src/simulator/aerodynamics.py`): CA active/passive, CN_alpha, Clp,
+  Cm_alpha active/passive, Cmq active/passive, transcribed from the source
+  PDF rather than a rescaled reconstruction.
+- Added a fin-cant roll-drive coefficient (`RocketParams.fin_cant_coefficient`)
+  reproducing the paper's Fig. 7 spin-up behavior during boost — not
+  published in Table 1, calibrated and clearly documented as such.
+- Default integration timestep reduced to `dt=0.002s` (`run_simulation`,
+  examples, tests) — the real Table 1 coefficients make the pitch/yaw
+  dynamics numerically stiffer near launch than the earlier rescaled model.
+
+### Validated
+- Initial axial acceleration: paper "35.4 g" vs. simulator ~35.7 g (0.8% error).
+- Burn-out velocity at t=1.67s: paper "705 m/s" vs. simulator ~717 m/s (1.7% error).
+- Summit time: paper "nearly 36 sec" vs. simulator ~36 s.
+- See `docs/aerodynamic-model.md` for the full precision-validation writeup,
+  including the documented late-flight attitude-behavior limitation.
+
 ## [0.1.0] — 2026-07-09
 
 ### Added

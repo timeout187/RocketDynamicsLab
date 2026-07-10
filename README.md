@@ -54,13 +54,13 @@ reproduce a real-world case study bit-for-bit.
 
 | Feature | Description |
 |---|---|
-| **Interactive GUI** | 10-page Streamlit lab: Coordinate Frames, State Variables, Forces & Moments, Equations of Motion, Numerical Integrator, Atmosphere, Aerodynamics, Sensitivity Analysis, Visualization, Simulation Results |
+| **Interactive GUI** | Single-page Streamlit dashboard: full rocket/initial-condition/atmosphere/solver sidebar, a live-editable Table 1 aero data grid (upload/reset/download CSV), 3D trajectory + 7 time-history plots, CSV/JSON export, and a joint Monte Carlo dispersion sweep |
 | **Real 6-DOF rigid-body dynamics** | Full translational + rotational equations of motion in body axes, not a simplified point-mass model |
-| **Mach-indexed aerodynamics** | Axial force, normal force, roll damping, pitch/yaw damping, and pitching-moment slope, all interpolated from a Table-1-style Mach-indexed lookup |
+| **Table 1 aerodynamics, as published** | Axial force (active/passive), normal force, roll damping, pitch/yaw damping, and pitching-moment slope transcribed directly from the paper's Table 1, Mach-interpolated |
 | **US Standard Atmosphere 1976** | Altitude-varying temperature, pressure, density, and speed of sound (troposphere + lower stratosphere) |
 | **Three integrators** | Hand-written forward Euler and classical RK4, plus adaptive `scipy.integrate.solve_ivp` (RK45), built for direct side-by-side comparison |
-| **Monte Carlo dispersion analysis** | Sweeps the paper's Table 2 uncertainty parameters (launch angle, mass, inertia, thrust, burn time, air density, spin rate, wind...) and reports impact-point spread |
-| **Professor Notes / Student Exercises** | Every lab page includes collapsible teaching notes and nine graduate-level assignments in `docs/assignments.md` |
+| **Monte Carlo dispersion analysis** | Joint sweep of the paper's Table 2 uncertainty parameters (launch angle, mass, inertia, thrust, burn time, air density, spin rate...) reporting the actual impact-point scatter, plus a one-at-a-time sweep API for reproducing Figs. 10-21 |
+| **Nine graduate-level assignments** | Deriving the equations by hand, implementing RK4, comparing against `solve_ivp`, timestep-sensitivity/instability investigation, and reproducing the paper's own figures — see `docs/assignments.md` |
 | **CI-tested** | 18 pytest tests (frame transforms, atmosphere physics, integrator convergence order, full-trajectory behavior, dispersion) run on every push |
 
 ## Architecture
@@ -182,8 +182,7 @@ src/simulator/
   dispersion.py        Monte Carlo dispersion sweep (paper's Table 2)
 src/visualization/     reusable Plotly figure builders
 src/gui/
-  app.py               the Streamlit GUI landing page
-  pages/                one file per lab topic (10 pages)
+  app.py               single-page Streamlit dashboard (sidebar + editable aero table + plots)
 docs/
   course-notes.md       syllabus and reading order
   mathematical-model.md the five modeling assumptions, state vector
@@ -220,12 +219,20 @@ pytest tests/ -q   # optional: verify the install, ~25s
 streamlit run src/gui/app.py
 ```
 
-Opens at `http://localhost:8501`. Navigate the ten lab pages from the
-sidebar; pages 9-10 (Visualization, Simulation Results) share a sidebar
-control panel for rocket parameters (elevation angle, mass, thrust, burn
-time, muzzle velocity/spin, wind, integrator, timestep) and re-run the
-simulation live as you change them. Or just use the hosted version:
+Opens at `http://localhost:8501`. Set rocket properties, initial conditions,
+atmosphere/wind, solver settings, and dispersion parameters in the sidebar;
+edit the Table 1 aerodynamic coefficients directly in the data grid (or
+upload/download a CSV); click **Run simulation** for a 3D trajectory, seven
+time-history plots, an impact-point summary, and CSV/JSON export; check
+**Run dispersion sensitivity sweep** for a joint Monte Carlo impact-point
+scatter. Or just use the hosted version:
 **[rocketdynamicslab.streamlit.app](https://rocketdynamicslab.streamlit.app/)**.
+
+⚠️ **Numerical note:** this system's pitch/yaw dynamics are stiff near
+launch (fast gyroscopic coning from the paper's own Table 1 coefficients).
+The default timestep (`dt=0.002s`) is chosen for stability — pushing it
+above ~0.005s can diverge, which is itself the subject of Assignment
+Exercise 3. See `docs/numerical-methods.md`.
 
 ### Command line
 
@@ -243,7 +250,7 @@ import sys; sys.path.insert(0, "src")
 from simulator import run_simulation, RocketParams
 
 rocket = RocketParams(mass_total=66.0, mean_thrust=23600.0)  # change anything
-result = run_simulation(rocket=rocket, elevation_deg=45.0, dt=0.01, method="rk4")
+result = run_simulation(rocket=rocket, elevation_deg=50.0, dt=0.002, method="rk4")
 print(f"time of flight: {result.time_of_flight:.1f} s, range: {result.impact_range:.0f} m")
 ```
 
@@ -262,29 +269,33 @@ about 25 seconds, and on every push via GitHub Actions.
 The source paper's own worked example uses a 50° firing angle; running
 this simulator at the same angle with its default 122&nbsp;mm case:
 
-| Quantity | Paper (Sec. 3.3, at 50°) | This simulator (50°, reconstructed aero) |
+| Quantity | Paper (Sec. 3.3, exact text, at 50°) | This simulator (50°, Table 1 as published) |
 |---|---|---|
-| Total flight time | "79 sec" | ~73.4 s |
-| Summit time | "nearly 36 sec" | ~22.3 s |
+| Initial axial acceleration | "35.4 g" | ~35.7 g (0.8% error) |
+| Burn-out velocity (t=1.67s) | "705 m/s" | ~717 m/s (1.7% error) |
+| Summit time | "nearly 36 sec" | ~36 s |
 | Muzzle velocity | 26.7 m/s | 26.7 m/s (exact — input parameter) |
-| Burn-out velocity | "705 m/s" | comparable order of magnitude (~870 m/s peak) |
 
-**These numbers will not match closely, and that's by design, not a bug.**
-The source PDF's Table 1 aerodynamic-coefficient data has a corrupted text
-layer (OCR/extraction interleaved its columns beyond reliable recovery), so
-this simulator uses a *representative reconstruction* that preserves the
-reported Mach-number trend but not the exact values — see
-[Assumptions and limitations](#assumptions-and-limitations) and
+**The boost-phase numbers the paper states as exact text now match to
+within ~2%.** Late-flight attitude behavior (spin history, angle of attack
+over the full ~90s flight) is a documented, explainable limitation rather
+than a silent discrepancy: Table 1's rotational-damping columns are
+genuinely ambiguous in the source PDF (its header row and column
+boundaries are lost to OCR), and reproducing the paper's spin-up (Fig. 7)
+requires a fin-cant roll-drive coefficient the table doesn't publish at
+all — see [Assumptions and limitations](#assumptions-and-limitations) and
 [`docs/aerodynamic-model.md`](docs/aerodynamic-model.md) for the full
-explanation. Reproducing and discussing this exact discrepancy is
-Assignment Exercise 7 in [`docs/assignments.md`](docs/assignments.md).
+explanation, including exactly which numbers match and why the rest are
+sensitive to an unpublished parameter. Investigating this discrepancy
+directly is Assignment Exercise 7 in [`docs/assignments.md`](docs/assignments.md).
 
 ## Assumptions and limitations
 
 **What this model includes:**
 
 - Full 6-DOF rigid-body dynamics (not a point-mass approximation)
-- Mach-indexed aerodynamic coefficients modeled on the paper's own Table 1 structure
+- Table 1's aerodynamic coefficients transcribed directly (CA active/passive,
+  CN_alpha, Clp, Cm_alpha active/passive, Cmq active/passive), Mach-interpolated
 - Gyroscopic coupling between pitch and yaw (the mechanism behind
   spin-induced "coning"/epicyclic motion)
 - Altitude-varying atmosphere (US Standard Atmosphere 1976)
@@ -302,6 +313,8 @@ missing features to add later):
 - Projectile structural flexibility
 - Launcher-phase effects (tip-off, launcher deflection) discussed in the
   paper's introduction but not modeled numerically here
+- The fin-cant roll-driving moment is an unpublished, calibrated parameter
+  (Table 1 only tabulates roll *damping*) — see `docs/aerodynamic-model.md`
 
 **What this project will never include, by design:**
 

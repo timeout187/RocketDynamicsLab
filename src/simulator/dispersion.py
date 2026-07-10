@@ -129,3 +129,53 @@ def monte_carlo_dispersion(param: UncertaintyParameter, n_samples: int = 30,
         radial_err.append(np.hypot(dR, dD))
 
     return values, np.array(range_err), np.array(drift_err), np.array(radial_err)
+
+
+def run_joint_dispersion(rocket: RocketParams = None, aero: AeroModel = None,
+                          elevation_deg: float = 50.0, n_samples: int = 200,
+                          std_devs: dict = None, seed: int = 0, t_end: float = 150.0,
+                          dt: float = 0.01, method: str = "rk4"):
+    """Full joint Monte Carlo: draw ALL uncertainty parameters simultaneously
+    from independent Gaussians (one std dev per Table 2 parameter) and
+    re-simulate, returning per-sample impact range/drift/time-of-flight
+    arrays -- the actual dispersion ellipse an accuracy-requirements
+    engineer would compute (Exercise 8), rather than one-at-a-time sweeps.
+
+    std_devs: dict with any of the keys below (falls back to Table 2's
+    upper bound / 3 if omitted): elevation_deg, mass_pct, propellant_mass_pct,
+    burn_time_s, thrust_pct, density_pct, ixx_pct, iyy_pct, v0_pct, spin_pct.
+    """
+    rng = np.random.default_rng(seed)
+    rocket = rocket or ROCKET_122MM
+    aero = aero or AeroModel()
+    sd = {
+        "elevation_deg": 2.0 / 3, "mass_pct": 2.0 / 3, "propellant_mass_pct": 2.0 / 3,
+        "burn_time_s": 0.1 / 3, "thrust_pct": 2.0 / 3, "density_pct": 4.0 / 3,
+        "ixx_pct": 1.0 / 3, "iyy_pct": 1.0 / 3, "v0_pct": 2.0 / 3, "spin_pct": 2.0 / 3,
+    }
+    if std_devs:
+        sd.update(std_devs)
+
+    ranges, drifts, tofs = [], [], []
+    for _ in range(n_samples):
+        elev = elevation_deg + rng.normal(0, sd["elevation_deg"])
+        r = RocketParams(**{
+            **rocket.__dict__,
+            "mass_total": _pct(rocket.mass_total, rng.normal(0, sd["mass_pct"])),
+            "mass_propellant": _pct(rocket.mass_propellant, rng.normal(0, sd["propellant_mass_pct"])),
+            "burn_time": rocket.burn_time + rng.normal(0, sd["burn_time_s"]),
+            "mean_thrust": _pct(rocket.mean_thrust, rng.normal(0, sd["thrust_pct"])),
+            "Ixx_initial": _pct(rocket.Ixx_initial, rng.normal(0, sd["ixx_pct"])),
+            "Ixx_final": _pct(rocket.Ixx_final, rng.normal(0, sd["ixx_pct"])),
+            "Iyy_initial": _pct(rocket.Iyy_initial, rng.normal(0, sd["iyy_pct"])),
+            "Iyy_final": _pct(rocket.Iyy_final, rng.normal(0, sd["iyy_pct"])),
+            "v_muzzle": _pct(rocket.v_muzzle, rng.normal(0, sd["v0_pct"])),
+            "p_muzzle": _pct(rocket.p_muzzle, rng.normal(0, sd["spin_pct"])),
+        })
+        a = Atmosphere(sea_level_pressure=_pct(101325.0, rng.normal(0, sd["density_pct"])))
+        res = run_simulation(r, a, aero, elevation_deg=elev, t_end=t_end, dt=dt, method=method)
+        ranges.append(res.impact_range)
+        drifts.append(res.drift)
+        tofs.append(res.time_of_flight)
+
+    return np.array(ranges), np.array(drifts), np.array(tofs)

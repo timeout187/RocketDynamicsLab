@@ -79,9 +79,14 @@ def _ground_impact_event(t, x):
 
 def run_simulation(rocket: RocketParams = None, atmo: Atmosphere = None, aero: AeroModel = None,
                     elevation_deg: float = 45.0, azimuth_deg: float = 0.0,
-                    wind_ned=(0.0, 0.0, 0.0), t_end: float = 120.0, dt: float = 0.01,
+                    wind_ned=(0.0, 0.0, 0.0), t_end: float = 120.0, dt: float = 0.002,
                     method: str = "rk4") -> SimulationResult:
     """Run a full trajectory simulation, stopping at ground impact (altitude <= 0).
+
+    Default dt=0.002s: this system's pitch/yaw dynamics are numerically stiff
+    near launch (fast gyroscopic coning driven by the paper's own Table 1
+    coefficients) -- a coarser fixed step can diverge. See
+    docs/numerical-methods.md.
 
     method: "euler" | "rk4" (fixed step, size dt) | "solve_ivp" (adaptive RK45).
     """

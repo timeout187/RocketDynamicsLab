@@ -17,7 +17,7 @@ from .frames import euler_to_LBE, kinematic_rates
 from .equations_of_motion import state_derivative
 from .integrators import euler_step, rk4_step, integrate_fixed_step, integrate_solve_ivp
 from .simulate import run_simulation
-from .dispersion import UncertaintyParameter, DEFAULT_UNCERTAINTIES, monte_carlo_dispersion
+from .dispersion import UncertaintyParameter, DEFAULT_UNCERTAINTIES, monte_carlo_dispersion, run_joint_dispersion
 
 __all__ = [
     "RocketParams",
@@ -35,4 +35,5 @@ __all__ = [
     "UncertaintyParameter",
     "DEFAULT_UNCERTAINTIES",
     "monte_carlo_dispersion",
+    "run_joint_dispersion",
 ]
