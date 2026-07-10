@@ -24,7 +24,7 @@ teaching point:
 | a | The flying body is **rigid**. | No structural bending/flexing modes — 6 DOF (3 translation + 3 rotation) fully describe the motion. A flexible-body model would need many more states. |
 | b | All equations are referred to a **body-fixed frame**. | Moments of inertia are constant in this frame (they'd be time-varying in an inertial frame as the body rotates) — this is *why* body axes are the natural choice for rotational dynamics. |
 | c | Aerodynamic coefficients are computed in the **body-fixed frame**. | Forces/moments from tables (Table 1) apply directly to body-axis states without extra rotation. |
-| d | The **Earth model** includes ellipsoidal shape, rotation, gravity variation. | For short-range artillery trajectories (tens of km, under two minutes of flight) Earth curvature/rotation effects are small but not always negligible — see `equations_of_motion.py`'s optional `include_earth_rotation` flag and the flat-Earth vs rotating-Earth assignment in `assignments.md`. |
+| d | The **Earth model** includes ellipsoidal shape, rotation, gravity variation. | For short-range artillery trajectories (tens of km, under two minutes of flight) Earth curvature/rotation effects are small but not always negligible — see `equations_of_motion.py`'s optional `include_earth_rotation` flag (which now implements *both* the Eq. (3) Coriolis term on body rates AND a full rotating/curved-Earth Navigation Equation with extra `V_N,V_E,V_D` states — spherical-Earth approximation, see `docs/coordinate-systems.md`) and the flat-Earth vs rotating-Earth assignment in `assignments.md`. |
 | e | The **atmosphere** varies with altitude (temperature, sonic speed, density). | Aerodynamic forces scale with dynamic pressure `q̄ = ½ρV²` and Mach number `M = V/a`; both change substantially over a multi-km-altitude trajectory, so a constant-atmosphere assumption would be a poor approximation. |
 
 ## 3. The state vector
@@ -40,6 +40,11 @@ x = [u, v, w,        body-axis velocity components         [m/s]
      N, E, D]        geodetic position (North/East/Down)      [m]
 ```
 
+When `include_earth_rotation=True`, three more states are appended
+(`V_N, V_E, V_D`, geodetic-frame velocity) for the rotating/curved-Earth
+Navigation Equation — see `docs/coordinate-systems.md`. This is off by
+default and the 12-state form above is unchanged in that case.
+
 See [`state-variables` page](../src/gui) in the GUI and
 [`equations.md`](equations.md) for what produces the *rate* of each of
 these 12 quantities.
@@ -50,7 +55,10 @@ these 12 quantities.
    aerodynamic + gravity) and Coriolis-like body-rate coupling terms.
 2. **Rotational dynamics** (Euler's equations, the paper's unlabeled "Euler's
    Equation" box) : `ṗ, q̇, ṙ` from aerodynamic moments and gyroscopic
-   coupling through the inertia tensor.
+   coupling through the inertia tensor, using the paper's general
+   (non-axisymmetric) form with cross-inertia term `Izx`. `RocketParams`
+   defaults `Izx=0`, which makes this collapse exactly to the simpler
+   axisymmetric-body case-study formulas.
 3. **Kinematics equation**: `φ̇, θ̇, ψ̇` from body rates — how attitude
    angles evolve given the angular velocity.
 4. **Navigation equation**: `Ṅ, Ė, Ḋ` from body velocity rotated into the

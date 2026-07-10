@@ -80,7 +80,8 @@ def _ground_impact_event(t, x):
 def run_simulation(rocket: RocketParams = None, atmo: Atmosphere = None, aero: AeroModel = None,
                     elevation_deg: float = 45.0, azimuth_deg: float = 0.0,
                     wind_ned=(0.0, 0.0, 0.0), t_end: float = 120.0, dt: float = 0.002,
-                    method: str = "rk4") -> SimulationResult:
+                    method: str = "rk4", include_earth_rotation: bool = False,
+                    latitude: float = 0.0) -> SimulationResult:
     """Run a full trajectory simulation, stopping at ground impact (altitude <= 0).
 
     Default dt=0.002s: this system's pitch/yaw dynamics are numerically stiff
@@ -89,15 +90,25 @@ def run_simulation(rocket: RocketParams = None, atmo: Atmosphere = None, aero: A
     docs/numerical-methods.md.
 
     method: "euler" | "rk4" (fixed step, size dt) | "solve_ivp" (adaptive RK45).
+    include_earth_rotation: False (default) uses the flat, non-rotating-Earth
+        Navigation Equation, matching the paper's case study exactly. True
+        switches to the full rotating/curved-Earth mechanization (Coriolis +
+        transport-rate terms, extra V_N/V_E/V_D states) -- see
+        equations_of_motion.py and docs/coordinate-systems.md.
+    latitude: launch-site geodetic latitude [rad], used only when
+        include_earth_rotation=True.
     """
     rocket = rocket or ROCKET_122MM
     atmo = atmo or Atmosphere()
     aero = aero or AeroModel()
 
-    x0 = initial_state(rocket, elevation_deg, azimuth_deg)
+    x0 = initial_state(rocket, elevation_deg, azimuth_deg,
+                        include_earth_rotation=include_earth_rotation)
 
     def f(t, x):
-        return state_derivative(t, x, rocket, atmo, aero, wind_ned=wind_ned)
+        return state_derivative(t, x, rocket, atmo, aero, wind_ned=wind_ned,
+                                 include_earth_rotation=include_earth_rotation,
+                                 latitude=latitude)
 
     if method == "solve_ivp":
         t, x = integrate_solve_ivp(f, x0, 0.0, t_end, max_step=dt, stop_event=_ground_impact_event)

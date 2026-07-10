@@ -39,6 +39,43 @@ single 3×3 matrix is used in *two* places in Fig. 1:
 2. **Earth-rotation term (Eq. 3)** — rotating the Earth's angular velocity
    vector into body axes so it can be added to the relative body rates.
 
+## Navigation equation: flat vs. rotating/curved Earth
+
+`state_derivative`'s `include_earth_rotation` flag controls *two*
+independent pieces of physics, both disabled by default:
+
+- **False (default)** — flat, non-rotating Earth. Body rates `[p q r]` are
+  used as-is, and position is simply `[Ṅ Ė Ḋ] = L_BE @ [u v w]`. This
+  matches the paper's short-range 122mm case study exactly and is left
+  byte-for-byte unchanged by the rotating-Earth work below.
+- **True** — full rotating/curved-Earth model:
+  - Eq. (3) Coriolis term on body rates (`earth_rotation_body_rates`,
+    unchanged from before).
+  - A rotating/curved-Earth **Navigation Equation** for the geodetic-frame
+    velocity `[V_N V_E V_D]` (now carried as three *extra* integrated
+    states, growing the state vector from 12 to 15):
+    ```
+    V_N_dot = (mu_dot + 2*omega)*sin(lambda)*V_E - lambda_dot*V_D + a_N
+    V_E_dot = -(mu_dot + 2*omega)*sin(lambda)*V_N - (mu_dot+2*omega)*cos(lambda)*V_D + a_E
+    V_D_dot = (mu_dot + 2*omega)*cos(lambda)*V_E + lambda_dot*V_N + a_D
+    lambda_dot = V_N / (R_meridian + H_G)
+    mu_dot     = V_E / ((R_normal + H_G) * cos(lambda))
+    ```
+    where `lambda`/`mu` are geodetic latitude/longitude, `H_G` is geodetic
+    altitude, and `a_N, a_E, a_D` are the body-axis velocity rotated into
+    the geodetic frame via `L_BE` (i.e. what the flat-Earth path calls
+    `vel_ned`).
+
+  **Simplification, documented explicitly**: the paper doesn't publish a
+  closed-form rotating/curved-Earth Navigation Equation, only the flat-Earth
+  form and the Eq. (3) body-rate term. This lab therefore uses the standard
+  spherical-Earth approximation `R_meridian = R_normal = R_EARTH` (mean
+  Earth radius, 6,378,137 m — WGS84 semi-major axis), recovering the current
+  latitude from the North distance travelled as `lambda = lambda_0 + N /
+  R_EARTH`. A full WGS84 ellipsoidal model (latitude-dependent
+  `R_meridian`/`R_normal`) is *not* implemented — left as a possible
+  extension exercise. See `equations_of_motion.py` for the code.
+
 ```python
 from src.simulator.frames import euler_to_LBE
 L_BE = euler_to_LBE(phi, theta, psi)   # radians in, 3x3 matrix out

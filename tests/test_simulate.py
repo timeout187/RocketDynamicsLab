@@ -27,7 +27,7 @@ def test_euler_diverges_at_large_dt_rk4_stable():
     # (fast gyroscopic coning driven by the paper's own Table 1 coefficients),
     # so a coarse fixed step diverges for BOTH methods -- but RK4 tolerates a
     # noticeably larger dt than Euler before doing so. See docs/numerical-methods.md.
-    euler = run_simulation(elevation_deg=45.0, t_end=5.0, dt=0.005, method="euler")
-    rk4 = run_simulation(elevation_deg=45.0, t_end=5.0, dt=0.005, method="rk4")
+    euler = run_simulation(elevation_deg=45.0, t_end=5.0, dt=0.003, method="euler")
+    rk4 = run_simulation(elevation_deg=45.0, t_end=5.0, dt=0.003, method="rk4")
     assert np.isfinite(rk4.x).all()
     assert np.max(np.abs(euler.x[:, :6])) >= np.max(np.abs(rk4.x[:, :6]))

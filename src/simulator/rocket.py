@@ -36,6 +36,15 @@ class RocketParams:
     Iyy_initial: float = 41.58      # = Izz_initial, [kg.m^2]
     Iyy_final: float = 33.83        # = Izz_final, [kg.m^2]
 
+    # Product-of-inertia (cross-inertia) term Izx, [kg.m^2]. The paper's case
+    # study is axisymmetric (Ixy = Iyz = Izx = 0, Table 1 doesn't tabulate a
+    # nonzero value), so both defaults are 0.0 -- the general (non-axisymmetric)
+    # Euler's Equation in equations_of_motion.py collapses to the paper's
+    # axisymmetric special case with these defaults. Non-zero values let
+    # students explore the effect of mass asymmetry (Assignments).
+    Izx_initial: float = 0.0        # [kg.m^2]
+    Izx_final: float = 0.0          # [kg.m^2]
+
     v_muzzle: float = 26.7          # Vo, [m/s]
     p_muzzle: float = 36.4          # po (spin rate), [rad/s] (~5.8 rps)
 
@@ -82,6 +91,12 @@ class RocketParams:
             return self.Iyy_final
         frac = t / self.burn_time
         return self.Iyy_initial + frac * (self.Iyy_final - self.Iyy_initial)
+
+    def Izx_at(self, t: float) -> float:
+        if t >= self.burn_time:
+            return self.Izx_final
+        frac = t / self.burn_time
+        return self.Izx_initial + frac * (self.Izx_final - self.Izx_initial)
 
     def thrust_at(self, t: float) -> float:
         return self.mean_thrust if t < self.burn_time else 0.0
