@@ -67,7 +67,7 @@ def test_izx_zero_default_trajectory_unchanged():
     """A full-trajectory run with the default (Izx=0) rocket must be finite
     and land, exactly as before this change (behavior-preserving check).
     """
-    res = run_simulation(elevation_deg=45.0, t_end=60.0, dt=0.01, method="rk4")
+    res = run_simulation(elevation_deg=45.0, t_end=120.0, dt=0.002, method="rk4")
     assert np.all(np.isfinite(res.x))
     assert res.altitude[-1] <= 1.0
 
@@ -75,12 +75,12 @@ def test_izx_zero_default_trajectory_unchanged():
 def test_izx_nonzero_runs_finite():
     """A nonzero cross-inertia term must not crash or produce NaN/Inf."""
     rocket = RocketParams(Izx_initial=0.02, Izx_final=0.015)
-    res = run_simulation(rocket=rocket, elevation_deg=45.0, t_end=30.0, dt=0.01, method="rk4")
+    res = run_simulation(rocket=rocket, elevation_deg=45.0, t_end=30.0, dt=0.002, method="rk4")
     assert np.all(np.isfinite(res.x))
 
 
 def test_rotating_earth_runs_finite_and_has_extra_states():
-    res = run_simulation(elevation_deg=45.0, t_end=30.0, dt=0.01, method="rk4",
+    res = run_simulation(elevation_deg=45.0, t_end=30.0, dt=0.002, method="rk4",
                           include_earth_rotation=True, latitude=np.radians(30.0))
     assert np.all(np.isfinite(res.x))
     assert res.x.shape[1] == 15  # N, E, D plus V_N, V_E, V_D
@@ -90,9 +90,9 @@ def test_rotating_earth_differs_measurably_from_flat_earth():
     """The Coriolis/curvature terms must have an actual, non-trivial effect
     on the trajectory (not a no-op) when include_earth_rotation=True.
     """
-    flat = run_simulation(elevation_deg=45.0, t_end=60.0, dt=0.01, method="rk4",
+    flat = run_simulation(elevation_deg=45.0, t_end=60.0, dt=0.002, method="rk4",
                            include_earth_rotation=False)
-    rotating = run_simulation(elevation_deg=45.0, t_end=60.0, dt=0.01, method="rk4",
+    rotating = run_simulation(elevation_deg=45.0, t_end=60.0, dt=0.002, method="rk4",
                                include_earth_rotation=True, latitude=np.radians(30.0))
     assert np.all(np.isfinite(rotating.x))
     # Compare drift (East displacement) at impact -- Coriolis deflection

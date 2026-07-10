@@ -18,6 +18,9 @@ for numerical-methods and flight-dynamics education, not operational use.
 **🚀 [Try the live lab — rocketdynamicslab.streamlit.app](https://rocketdynamicslab.streamlit.app/)**
 — nothing to install.
 
+**📖 [Course site & documentation — timeout187.github.io/RocketDynamicsLab](https://timeout187.github.io/RocketDynamicsLab/)**
+— syllabus, the math, and every assignment.
+
 ---
 
 ## Table of contents
@@ -61,7 +64,7 @@ reproduce a real-world case study bit-for-bit.
 | **Three integrators** | Hand-written forward Euler and classical RK4, plus adaptive `scipy.integrate.solve_ivp` (RK45), built for direct side-by-side comparison |
 | **Monte Carlo dispersion analysis** | Joint sweep of the paper's Table 2 uncertainty parameters (launch angle, mass, inertia, thrust, burn time, air density, spin rate...) reporting the actual impact-point scatter, plus a one-at-a-time sweep API for reproducing Figs. 10-21 |
 | **Nine graduate-level assignments** | Deriving the equations by hand, implementing RK4, comparing against `solve_ivp`, timestep-sensitivity/instability investigation, and reproducing the paper's own figures — see `docs/assignments.md` |
-| **CI-tested** | 18 pytest tests (frame transforms, atmosphere physics, integrator convergence order, full-trajectory behavior, dispersion) run on every push |
+| **CI-tested** | 23 pytest tests (frame transforms, atmosphere physics, integrator convergence order, full-trajectory behavior, the general Izx cross-inertia Euler's Equation, rotating-Earth navigation, dispersion) run on every push |
 
 ## Architecture
 
@@ -195,7 +198,7 @@ docs/
   assignments.md         nine graduate-level exercises
   instructor-guide.md    7-session schedule, rubric, known pitfalls
 examples/              four ready-to-run standalone scripts
-tests/                 18 tests: frames, atmosphere, integrators, simulate, dispersion
+tests/                 23 tests: frames, atmosphere, integrators, simulate, equations of motion, dispersion
 assets/                static, hand-authored diagrams
 .github/workflows/     CI (pytest on every push)
 ```
@@ -260,9 +263,10 @@ print(f"time of flight: {result.time_of_flight:.1f} s, range: {result.impact_ran
 pytest tests/ -q
 ```
 
-18 tests across coordinate frames, atmosphere physics, integrator
-convergence order, full-trajectory behavior, and dispersion — runs in
-about 25 seconds, and on every push via GitHub Actions.
+23 tests across coordinate frames, atmosphere physics, integrator
+convergence order, full-trajectory behavior, the general (Izx) Euler's
+Equation and rotating-Earth navigation, and dispersion — runs on every
+push via GitHub Actions.
 
 ## Validation against the published paper
 
@@ -367,7 +371,7 @@ complete citation list and data-provenance notes.
 **Built with:** [Streamlit](https://streamlit.io), [Plotly](https://plotly.com),
 [SciPy](https://scipy.org), [NumPy](https://numpy.org), and [pandas](https://pandas.pydata.org).
 
-**Project by [timeout187](https://github.com/timeout187)**, built with Claude.
+**Project by Hasan Ahmed ([timeout187](https://github.com/timeout187))**, built with Claude.
 
 ## License
 
